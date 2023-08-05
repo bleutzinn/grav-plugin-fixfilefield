@@ -1,0 +1,39 @@
+en:
+  PLUGIN_FIXFILEFIELD:
+    DEMO_TEXTS: 
+      NAME_LABEL: 'Name'
+      ATTACHMENT_LABEL: 'Attachment (1 PDF)'
+      IMAGES_LABEL: 'Images (optional; minimum 2, maximum 3)'
+    MESSAGES:
+      UPLOAD_MIN: 'Upload at least %d files'
+      UPLOAD_MAX: 'Upload no more than %d files'
+      UPLOAD_MIN_MAX: 'Upload at least %d but no more than %d files'
+    VALIDATION:
+      ERRORS:
+        REQUIRED: 'This field is mandatory!'
+        UPLOAD_MIN:
+          SINGULAR: 'Please upload at least one file'
+          PLURAL: 'Please upload at least %d files'
+        UPLOAD_MAX:
+          SINGULAR: 'Please upload just one file'
+          PLURAL: 'Please upload no more than %d files'
+
+de:
+  PLUGIN_FIXFILEFIELD:
+    DEMO_TEXTS:
+      NAME_LABEL: 'Name'
+      ATTACHMENT_LABEL: 'Anhang (1 PDF)'
+      IMAGES_LABEL: 'Bilder (optional; mindestens 2, maximal 3)'
+    MESSAGES:
+      UPLOAD_MIN: 'Laden Sie mindestens %d Dateien hoch'
+      UPLOAD_MAX: 'Laden Sie maximal %d Dateien hoch'
+      UPLOAD_MIN_MAX: 'Laden Sie mindestens %d, aber nicht mehr als %d Dateien hoch'
+    VALIDATION:
+      ERRORS:
+        REQUIRED: 'Dieses Feld ist obligatorisch!'
+        UPLOAD_MIN:
+          SINGULAR: 'Bitte laden Sie mindestens eine Datei hoch'
+          PLURAL: 'Bitte laden Sie mindestens %d Dateien hoch'
+        UPLOAD_MAX:
+          SINGULAR: 'Bitte laden Sie nur eine Datei hoch'
+          PLURAL: 'Bitte laden Sie maximal %d Dateien hoch'

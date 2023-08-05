@@ -1,0 +1,12 @@
+{#  #}
+{% extends "@formplugin/forms/field.html.twig" %}
+
+{% block label %}
+
+  {{ parent() }}
+
+  {% if field.type == 'file' and field.datasets.required %}
+    <span class="required">*</span> 
+  {% endif %}
+
+{% endblock %}

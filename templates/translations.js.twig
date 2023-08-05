@@ -1,0 +1,16 @@
+{# Fix File Field Plugin - translations #}
+
+fixfilefieldplugin_translations = (function () {
+
+  function getTranslations() {
+    const translations = {{ lang|raw }};
+
+    return translations;
+  }
+
+  return {
+    getTranslations: getTranslations,
+  };
+})();
+
+translations = fixfilefieldplugin_translations.getTranslations();

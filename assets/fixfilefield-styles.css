@@ -1,0 +1,14 @@
+
+.dropzone .dz-preview .dz-remove {
+    font-weight: bolder;
+}
+
+.dropzone .dz-preview .dz-error-message {
+    top: 150px !important;
+}
+
+/* CSS to style the disabled Dropzone element */
+.dropzone-disabled {
+    pointer-events: none;
+    opacity: 0.5;
+}

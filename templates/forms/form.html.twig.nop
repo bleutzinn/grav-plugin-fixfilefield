@@ -1,0 +1,17 @@
+{# BTW .nop: no operation #}
+
+{% extends '@formplugin/forms/form.html.twig' %}
+
+{% block content %}
+
+{% set submitted_data = form.data.toArray %}
+
+pre dump
+{{ vardump(submitted_data) }}
+post dump
+
+{% do form.setAllData(submitted_data) %}
+
+{# {% include "@formplugin/forms/form.html.twig"  %} #}
+
+{% endblock %}

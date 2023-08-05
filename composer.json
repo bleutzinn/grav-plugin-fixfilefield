@@ -1,0 +1,26 @@
+{
+  "name": "bleutzinn/fixfilefield",
+  "type": "grav-plugin",
+  "description": "well",
+  "keywords": ["plugin"],
+  "homepage": "https://github.com/bleutzinn/grav-plugin-fixfilefield",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Ron Wardenier",
+      "email": "ron@rwgc.nl",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": ">=7.1.3",
+    "simplehtmldom/simplehtmldom": "2.0-RC2",
+    "voku/simple_html_dom": "^4.8"
+  },
+  "autoload": {
+    "psr-4": {
+      "Grav\\Plugin\\FixFileField\\": "classes/"
+    },
+    "classmap":  ["fixfilefield.php"]
+  }
+}

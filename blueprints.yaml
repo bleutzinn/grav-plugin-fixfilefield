@@ -1,0 +1,32 @@
+name: FixFileField
+slug: fixfilefield
+type: plugin
+version: 0.1.0
+description: The FixFileField Plugin offers an unobtrusive solution to address various file upload quirks and problems of the Form plugin
+icon: wrench
+author:
+  name: Ron Wardenier
+  email: ron@rwgc.nl
+homepage: https://github.com/bleutzinn/grav-plugin-fixfilefield
+demo: http://demo.yoursite.com
+keywords: grav, plugin, workaround, upload, file field, form
+bugs: https://github.com/bleutzinn/grav-plugin-fixfilefield/issues
+docs: https://github.com/bleutzinn/grav-plugin-fixfilefield/blob/develop/README.md
+license: MIT
+
+dependencies:
+  - { name: grav, version: '>=1.6.0' }
+
+form:
+  validation: loose
+  fields:
+    enabled:
+      type: toggle
+      label: PLUGIN_ADMIN.PLUGIN_STATUS
+      highlight: 1
+      default: 0
+      options:
+        1: PLUGIN_ADMIN.ENABLED
+        0: PLUGIN_ADMIN.DISABLED
+      validate:
+        type: bool
