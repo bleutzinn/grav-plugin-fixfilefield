@@ -36,15 +36,15 @@ window.addEventListener("DOMContentLoaded", (event) => {
       if (form !== null) {
         // Prevent the form from submitting immediately
         event.preventDefault();
-        document.addEventListener('click', function (event) {
+        form.addEventListener('click', function (event) {
           const clickedElement = event.target;
         
           // Check if the clicked element is the Submit button or the Reset button
-          if (clickedElement.matches('.btn[type="submit"]')) {
+          if (clickedElement.matches('input[type="submit"], button[type="submit"]')) {
             // Submit button clicked
             console.log('Submit button clicked');
 
-            const fileInputs = form.querySelectorAll('input.form-input[type="file"]');
+            const fileInputs = form.querySelectorAll('input[type="file"]');
             let allValid = true;
 
             // Process each set of file fields separately
