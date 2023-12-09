@@ -13,6 +13,8 @@ use Symfony\Component\Yaml\Yaml;
  */
 class FixfilefieldPlugin extends Plugin
 {
+    private $assetsAdded = false;
+
     /**
      * Composer autoload
      *
@@ -44,99 +46,86 @@ class FixfilefieldPlugin extends Plugin
         ];
     }
 
-    /**
-     * getFileFields
-     * Get form file fields
-     *
-     * @return mixed
-     */
-    public function getFileFields(): mixed
-    {
-        $forms = $this->grav['page']->getForms();
-
-        $results = [];
-        foreach ($forms as $form) {
-            if (isset($form['fields'])) {
-                foreach ($form['fields'] as $name => $definition) {
-                    if (isset($definition['type']) && $definition['type'] == 'file') {
-                        $results[$name] = $definition;
-                    }
-                }
-            }
-        }
-
-        if (!empty($results)) {
-            return $results;
-        } else {
-            return null;
-        }
-    }
-
-    /*
-        Move adding of element attributes from onOutputGenerated into this function
-    */
     public function onFormInitialized(Event $event)
     {
         $form = $event['form'];
         $fields = $form->getFields();
-
-        // dump($fields);
-
-        foreach ($fields as $key => $field) {
-            if ($field['type'] === 'file') {
-                // Add unique field name attribute
-                $fields[$key]['datasets']['form-field-name'] = $form->getFormName() . '-' . $key;
-
-                // Add restrictions attributes if present in the form
-                if (isset($field['validate']['required']) && $field['validate']['required']) {
-                    $required = $field['validate']['required'];
-                    // Set required flag when validate.required == true
-                    $fields[$key]['datasets']['required'] = $required;
-                    // Unset the 'real' validate.required field to prevent the Form bug #106 and the like
-                    $fields[$key]['validate']['required'] = false;
-                    // } else {
-                    //     $required = false;
-                }
-
-                // Set the minimum number of files allowed to upload based on the new lower_limit attribute
-                if (isset($fields[$key]['lower_limit'])) {
-                    $min_number_of_files = $fields[$key]['lower_limit'];
-                    if (is_numeric($min_number_of_files) && $min_number_of_files > 0) {
-                        $fields[$key]['datasets']['minnumberoffiles'] = $min_number_of_files;
-                    }
-                }
-
-                // Set the maximum number of files allowed to upload based on the limit attribute
-                if (isset($fields[$key]['limit'])) {
-                    $max_number_of_files = $fields[$key]['limit'];
-                    if (is_numeric($max_number_of_files) && $max_number_of_files > 0) {
-                        $fields[$key]['datasets']['maxnumberoffiles'] = $max_number_of_files;
-                    }
-                }
-            }
-        }
-
-        // dump($fields);
-        // exit;
-
+        $this->scanFileFields($fields);
         $form->setFields($fields);
     }
 
     /**
-     * onPageInitialized
-     * 
-     * Add JS asset when the page contains a form including one or more file fields
+     * scanFileFields
      *
-     * @param mixed event
+     * Find file fields recursively from an array of field definitions by reference. Dispatch any file fields for fixing.
+     *
+     * @param array fields
      *
      * @return void
      */
-    public function onPageInitialized($event)
+    private function scanFileFields(array &$fields): void
     {
-        $file_fields = $this->getFileFields();
+        foreach ($fields as $key => &$field) {
+            if ($field['type'] == 'file') {
+                $this->fixFileField($field);
+            }
+            elseif (isset($field['fields'])) {
+                $this->scanFileFields($field['fields']);
+            }
+        }
+    }
 
-        // If there is at least one file field add assets
-        if (!empty($file_fields)) {
+    /**
+     * fixFileField
+     *
+     * Fix properties of file field passed in by reference. Ensure required plugin assets are loaded.
+     *
+     * @param array field
+     *
+     * @return void
+     */
+    private function fixFileField(array &$field): void
+    {
+        $this->addPluginAssets();
+
+        // Add restrictions attributes if present in the form
+        if (isset($field['validate']['required']) && $field['validate']['required']) {
+            $required = $field['validate']['required'];
+            // Set required flag when validate.required == true
+            $field['datasets']['required'] = $required;
+            // Unset the 'real' validate.required field to prevent the Form bug #106 and the like
+            $field['validate']['required'] = false;
+            // } else {
+            //     $required = false;
+        }
+
+        // Set the minimum number of files allowed to upload based on the new lower_limit attribute
+        if (isset($field['lower_limit'])) {
+            $min_number_of_files = $field['lower_limit'];
+            if (is_numeric($min_number_of_files) && $min_number_of_files > 0) {
+                $field['datasets']['minnumberoffiles'] = $min_number_of_files;
+            }
+        }
+
+        // Set the maximum number of files allowed to upload based on the limit attribute
+        if (isset($field['limit'])) {
+            $max_number_of_files = $field['limit'];
+            if (is_numeric($max_number_of_files) && $max_number_of_files > 0) {
+                $field['datasets']['maxnumberoffiles'] = $max_number_of_files;
+            }
+        }
+    }
+
+    /**
+     * addPluginAssets
+     * 
+     * Add JS asset when the page contains a form including one or more file fields
+     *
+     * @return void
+     */
+    private function addPluginAssets()
+    {
+        if(!$this->assetsAdded) {
             $this->grav['assets']->addCss('plugin://' . basename(__DIR__) . '/assets/fixfilefield-styles.css', ['position' => 'after']);
 
             // if (is_array($file_fields)) {
@@ -167,6 +156,7 @@ class FixfilefieldPlugin extends Plugin
             $js = $this->grav['twig']->processTemplate('translations.js.twig', ['lang' => json_encode($translations[$active_language])]);
 
             $this->grav['assets']->addInlineJs($js);
+            $this->assetsAdded = true;
         }
     }
 
@@ -183,7 +173,6 @@ class FixfilefieldPlugin extends Plugin
         // Enable the main events we are interested in
         $this->enable([
             'onFormInitialized' => ['onFormInitialized', 0],
-            'onPageInitialized' => ['onPageInitialized', 0],
             'onTwigLoader' => ['onTwigLoader', 0],
             'onTwigTemplatePaths' => ['onTwigTemplatePaths', 10],
         ]);
