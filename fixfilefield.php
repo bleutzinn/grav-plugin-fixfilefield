@@ -4,6 +4,7 @@ namespace Grav\Plugin;
 
 use Composer\Autoload\ClassLoader;
 use Grav\Common\Plugin;
+use Grav\Plugin\Form\Form;
 use RocketTheme\Toolbox\Event\Event;
 use Symfony\Component\Yaml\Yaml;
 
@@ -77,15 +78,32 @@ class FixfilefieldPlugin extends Plugin
     */
     public function onFormInitialized(Event $event)
     {
+        /** @var Form */
         $form = $event['form'];
         $fields = $form->getFields();
 
         // dump($fields);
 
+        $this->updateFileFields($fields, $form->getFormName());
+
+        // dump($fields);
+        // exit;
+
+        $form->setFields($fields);
+    }
+
+    /**
+     * Recurse over all (nested) form fields and update each File field found. 
+     * When field contains attribute `fields` the method will recurse the attribute.
+     * 
+     * @param array &$fields contains an array of field definitions
+     * @param string $formName contains the name of the form
+     */
+    private function updateFileFields(array &$fields, string $formName) {
         foreach ($fields as $key => $field) {
             if ($field['type'] === 'file') {
                 // Add unique field name attribute
-                $fields[$key]['datasets']['form-field-name'] = $form->getFormName() . '-' . $key;
+                $fields[$key]['datasets']['form-field-name'] = $formName . '-' . $key;
 
                 // Add restrictions attributes if present in the form
                 if (isset($field['validate']['required']) && $field['validate']['required']) {
@@ -113,15 +131,12 @@ class FixfilefieldPlugin extends Plugin
                         $fields[$key]['datasets']['maxnumberoffiles'] = $max_number_of_files;
                     }
                 }
+            } elseif (isset($field['fields'])) {
+                $this->updateFileFields($fields[$key]['fields'], $formName);
             }
         }
-
-        // dump($fields);
-        // exit;
-
-        $form->setFields($fields);
     }
-
+    
     /**
      * onPageInitialized
      * 
