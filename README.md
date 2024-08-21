@@ -1,4 +1,6 @@
-#FixFileField Plugin
+# FixFileField Plugin
+
+***Abandonment Notice:** Creating and improving my plugins for Grav was fun to do. However times are changing and so am I. My interests have shifted away from coding and so I am abandoning my plugins. If you are interested in taking over please follow the  ["Abandoned Resource Protocol"](https://learn.getgrav.org/17/advanced/grav-development#abandoned-resource-protocol). Simply skip the first two steps and refer to this statement in step 3.*
 
 This plugin provides a workaround so file fields in Grav Forms can be set to required or are mandatory.
 
